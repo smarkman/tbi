@@ -37,9 +37,31 @@
   const listPages = new Set([location.href]);
   const editLinks = new Map(); // url -> row label
   const queue = [location.href];
+  const rowInfo = new Map(); // edit url -> { view_url, columns }
   while (queue.length) {
     const url = queue.shift();
     const { doc } = url === location.href ? { doc: document } : await fetchDoc(url);
+    // ShulCloud layout: page-number / "Next" links, and table rows with "Edit" + "View & Edit Page" links
+    doc.querySelectorAll('a[href]').forEach((a) => {
+      const u = abs(a.getAttribute('href'));
+      const t = a.textContent.trim();
+      if (u && u.origin === origin && u.pathname === listPath && /^(\d+|Next.*)$/i.test(t) && !listPages.has(u.href)) {
+        listPages.add(u.href); queue.push(u.href);
+      }
+    });
+    doc.querySelectorAll('tr').forEach((tr) => {
+      const links = [...tr.querySelectorAll('a[href]')];
+      const edit = links.find((a) => a.textContent.trim() === 'Edit');
+      if (!edit) return;
+      const view = links.find((a) => /view/i.test(a.textContent));
+      const editUrl = abs(edit.getAttribute('href'))?.href;
+      if (!editUrl) return;
+      const cells = [...tr.cells].map((c) => c.innerText.trim());
+      editLinks.set(editUrl, cells.slice(0, 5).join(' | '));
+      rowInfo.set(editUrl, { view_url: view ? abs(view.getAttribute('href'))?.href : '', columns: cells.slice(0, 5) });
+    });
+    if (editLinks.size) { if (url !== location.href) await sleep(DELAY_MS); continue; }
+    // Fallback for other layouts
     doc.querySelectorAll('a[href]').forEach((a) => {
       const u = abs(a.getAttribute('href'));
       if (!u || u.origin !== origin || SKIP.test(u.href)) return;
@@ -86,7 +108,8 @@
         fields[k] = { label: labelFor(el), type, value };
       });
       const heading = doc.querySelector('h1, h2, .page-title')?.textContent.trim() || '';
-      records.push({ edit_url: url, list_row: listLabel, admin_heading: heading, http_status: status, fields });
+      const info = rowInfo.get(url) || {};
+      records.push({ edit_url: url, view_url: info.view_url || '', list_row: listLabel, admin_heading: heading, http_status: status, fields });
       console.log(`[${i}/${editLinks.size}] ${heading || url} — ${Object.keys(fields).length} fields`);
     } catch (e) {
       records.push({ edit_url: url, list_row: listLabel, error: String(e) });
@@ -105,8 +128,8 @@
 
   const allKeys = [...new Set(records.flatMap((r) => Object.keys(r.fields || {})))];
   const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const rows = [['edit_url', 'list_row', 'admin_heading', ...allKeys].map(esc).join(',')];
-  records.forEach((r) => rows.push([r.edit_url, r.list_row, r.admin_heading,
+  const rows = [['edit_url', 'view_url', 'list_row', 'admin_heading', ...allKeys].map(esc).join(',')];
+  records.forEach((r) => rows.push([r.edit_url, r.view_url, r.list_row, r.admin_heading,
     ...allKeys.map((k) => { const f = r.fields?.[k]; return f ? (/<[a-z][\s\S]*>/i.test(f.value) ? text(f.value) : f.value) : ''; })].map(esc).join(',')));
   download('tbi-cms-export.csv', '﻿' + rows.join('\n'), 'text/csv');
 
