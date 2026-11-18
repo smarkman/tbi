@@ -9,7 +9,7 @@ Paste **Prompt 0** first, then one page prompt at a time. Before Prompt 0, uploa
 
 ## Prompt 0: context and constraints (paste first)
 
-> We're redesigning the website for Temple Beth Israel (TBI), a synagogue in Port Washington, NY, at 118 Murray Ave. The site runs on **ShulCloud**, a synagogue management platform with a section-based page builder. Mockups must be buildable inside ShulCloud, so follow these constraints exactly:
+> We're redesigning the website for Temple Beth Israel (TBI), a synagogue in Port Washington, NY, at 18 Temple Drive. The site runs on **ShulCloud**, a synagogue management platform with a section-based page builder. Mockups must be buildable inside ShulCloud, so follow these constraints exactly:
 >
 > **Page building blocks (the only layouts allowed):** full-width sections stacked vertically. Each section uses one of these column layouts: full width; 2, 3, 4, 5 or 6 equal columns; 1/3 + 2/3; 2/3 + 1/3; 1/4 + 3/4; 3/4 + 1/4; 1/4 + 1/2 + 1/4; 1/3 + 1/6 + 1/3 + 1/6. A section can have a background color or a full-bleed background image (parallax allowed). Content inside columns is rich text (H2/H3, paragraphs, lists, links, buttons) and images. Optional right sidebar on interior pages; landing pages have none.
 >
@@ -42,7 +42,7 @@ Paste **Prompt 0** first, then one page prompt at a time. Before Prompt 0, uploa
 > 6. **Welcome from our clergy** (1/3 + 2/3): clergy photo, 3–4 sentence welcome, link "Meet our clergy and staff".
 > 7. **New to TBI?** (full-width Parallax Teaser over a photo): one sentence, buttons "Plan a visit" and "Membership and dues".
 > 8. **Support our community** (Donation Teaser): Donate · Honor or remember someone · Kol Nidre Appeal.
-> 9. **Footer**: 118 Murray Ave, Port Washington, NY; map link; office hours; phone; newsletter sign-up; Facebook.
+> 9. **Footer**: 18 Temple Drive, Port Washington, NY; map link; office hours; phone; newsletter sign-up; Facebook.
 
 ## Prompt 2: Section landing page (use "Learn" as the example)
 
