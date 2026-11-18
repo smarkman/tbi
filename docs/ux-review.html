@@ -1,0 +1,296 @@
+<title>TBI Website UX Review</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: single reading column (~72ch) with wide bands for the sitemap and wireframes */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --ink:#18212e; --muted:#5a6575; --line:#dde2ea;
+  --tekhelet:#1f4e8c; --tekhelet-soft:#e6eef8; --gold:#a8792a; --gold-soft:#f6eedf;
+  --bad:#b4372f; --bad-soft:#f8e7e5; --ok:#2d6a4f; --ok-soft:#e3f1ea; --warn:#8a6100; --warn-soft:#fbf1d9;
+  --display:"Frank Ruhl Libre",Georgia,"Times New Roman",serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#10151d; --surface:#171e29; --ink:#e7ebf1; --muted:#9aa5b5; --line:#2a3443;
+  --tekhelet:#7fa8e0; --tekhelet-soft:#1b2a40; --gold:#d6a85a; --gold-soft:#2e2617;
+  --bad:#ec8a80; --bad-soft:#3a1f1d; --ok:#7cc4a0; --ok-soft:#18302a; --warn:#e3bd62; --warn-soft:#352b14; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10151d; --surface:#171e29; --ink:#e7ebf1; --muted:#9aa5b5; --line:#2a3443;
+  --tekhelet:#7fa8e0; --tekhelet-soft:#1b2a40; --gold:#d6a85a; --gold-soft:#2e2617;
+  --bad:#ec8a80; --bad-soft:#3a1f1d; --ok:#7cc4a0; --ok-soft:#18302a; --warn:#e3bd62; --warn-soft:#352b14; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.read{max-width:72ch}
+header.top{border-bottom:1px solid var(--line);background:var(--surface)}
+header.top .wrap{padding-block:44px 36px}
+.eyebrow{font:500 12px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0}
+h1{font-size:clamp(32px,5vw,48px);font-weight:700;margin-top:10px}
+h2{font-size:clamp(24px,3.2vw,32px);font-weight:700;margin-bottom:14px}
+h3{font-size:20px;font-weight:500;margin-bottom:6px}
+.lede{font-size:18px;color:var(--muted);max-width:64ch;margin:14px 0 0}
+section{padding-block:48px;border-bottom:1px solid var(--line)}
+p{margin:0 0 12px}
+a{color:var(--tekhelet)}
+a:focus-visible{outline:2px solid var(--tekhelet);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+nav.toc a{font-size:14px;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:var(--ink);background:var(--bg)}
+nav.toc a:hover{border-color:var(--tekhelet);color:var(--tekhelet)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:20px}
+.stat{background:var(--surface);padding:18px}
+.stat b{display:block;font:700 32px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.stat span{font-size:14px;color:var(--muted)}
+.note{background:var(--tekhelet-soft);border-radius:8px;padding:14px 16px;font-size:15px;margin-top:20px}
+.issues{display:grid;gap:14px;margin-top:8px}
+.issue{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px;display:grid;gap:8px}
+.issue .head{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.pill{font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:4px;white-space:nowrap}
+.p1{background:var(--bad-soft);color:var(--bad)} .p2{background:var(--warn-soft);color:var(--warn)} .p3{background:var(--tekhelet-soft);color:var(--tekhelet)}
+.yes{background:var(--ok-soft);color:var(--ok)} .ask{background:var(--warn-soft);color:var(--warn)}
+.issue .ev{font-size:14px;color:var(--muted)}
+.issue .fix{font-size:15px}
+.issue .fix b{color:var(--ok)}
+code{font:13px var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:1px 5px;overflow-wrap:anywhere}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface);margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 12px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+tr:last-child td{border-bottom:0}
+.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px}
+.col{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;min-width:0}
+.col h3{font-size:18px;color:var(--tekhelet);margin-bottom:8px}
+.col ul{list-style:none;margin:0;padding:0;font-size:14px;display:grid;gap:5px}
+.col li{padding-left:12px;position:relative}
+.col li::before{content:"";position:absolute;left:0;top:.65em;width:5px;height:1px;background:var(--muted)}
+.col .from{display:block;font-size:12px;color:var(--muted)}
+.col.cta{border-color:var(--gold);background:var(--gold-soft)}
+.col.cta h3{color:var(--gold)}
+.utility{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;color:var(--muted);margin-top:14px}
+.wire{display:grid;gap:8px;margin-top:16px}
+.band{display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:start}
+.box{border:1.5px dashed var(--line);border-radius:6px;padding:14px;background:var(--surface);min-width:0}
+.box.solid{border-style:solid;border-color:var(--tekhelet);background:var(--tekhelet-soft)}
+.box h4{margin:0 0 4px;font:600 15px var(--body)}
+.box p{font-size:14px;color:var(--muted);margin:0}
+.cols{display:grid;gap:8px;margin-top:8px}
+.cols>div{border:1px solid var(--line);border-radius:4px;padding:8px;font-size:13px;background:var(--bg);min-width:0}
+.c3{grid-template-columns:repeat(3,1fr)} .c4{grid-template-columns:repeat(4,1fr)} .c13{grid-template-columns:1fr 2fr}
+.recipe{font:12px/1.5 var(--mono);color:var(--muted)}
+.recipe b{color:var(--ink);font-weight:500}
+.phases{display:grid;gap:10px;counter-reset:ph;margin-top:12px}
+.phase{display:grid;grid-template-columns:auto 1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px}
+.phase::before{counter-increment:ph;content:counter(ph);font:700 26px/1 var(--display);color:var(--tekhelet);width:28px}
+.phase h3{font-size:18px}
+.phase p{font-size:15px;margin:0;color:var(--muted)}
+ul.rules{padding-left:20px;margin:8px 0 0;display:grid;gap:6px}
+footer{padding-block:32px;color:var(--muted);font-size:14px}
+@media (max-width:640px){
+  .band{grid-template-columns:1fr;gap:6px}
+  .c4{grid-template-columns:repeat(2,1fr)} .c3,.c13{grid-template-columns:1fr}
+}
+</style>
+
+<header class="top"><div class="wrap">
+  <div class="eyebrow">Temple Beth Israel · tbiport.org · 18 November 2026 · 8 Kislev 5787</div>
+  <h1>Website UX review and layout plan</h1>
+  <p class="lede">How the current ShulCloud site works for visitors, what ShulCloud lets us change, and a recommended structure, homepage and page templates to mock up in Claude Design and then build in ShulCloud.</p>
+  <nav class="toc" aria-label="Sections">
+    <a href="#glance">At a glance</a><a href="#issues">UX problems</a><a href="#shulcloud">What ShulCloud allows</a><a href="#sitemap">New site map</a><a href="#home">Homepage</a><a href="#templates">Page templates</a><a href="#rules">Editor rules</a><a href="#plan">Rollout</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+
+<section id="glance">
+  <h2>At a glance</h2>
+  <div class="read"><p>The site has grown by adding a page for nearly everything, including calendar events and individual simchas. Visitors get very little structure, and the few pages that matter are hard to find. The fix is mostly <strong>subtraction and structure</strong>, which ShulCloud handles well, rather than a new theme.</p></div>
+  <div class="stats">
+    <div class="stat"><b>1,093</b><span>pages in the CMS</span></div>
+    <div class="stat"><b>~190</b><span>pages with real copy worth keeping</span></div>
+    <div class="stat"><b>404 / 407</b><span>images on kept pages with no alt text</span></div>
+    <div class="stat"><b>369</b><span>links with no readable text (image-only links)</span></div>
+    <div class="stat"><b>4,348</b><span>inline styles pasted into page copy, in 9+ fonts</span></div>
+    <div class="stat"><b>1 of 189</b><span>kept pages with a meta description</span></div>
+  </div>
+  <p class="note"><strong>How this was reviewed.</strong> The review is based on the full export of all 1,093 pages: settings, page HTML, links and images. It also uses the editing options visible in your ShulCloud admin. The live site blocks automated visits, so the theme's header, menu, colors and mobile layout were <em>not</em> seen directly. To complete the visual check, send screenshots of the homepage on desktop and on a phone, plus the open menu.</p>
+</section>
+
+<section id="issues">
+  <h2>UX problems, in priority order</h2>
+  <div class="issues">
+
+    <div class="issue"><div class="head"><span class="pill p1">High</span><h3>The homepage shows internal room holds as public events</h3></div>
+      <p class="ev">The homepage events feed currently lists “HOLD FOR SET UP- Preschool Fall Festival Social Hall” next to “Preschool Music” and “Soccer Enrichment”. Facility bookings are flowing into the public calendar.</p>
+      <p class="fix"><b>Fix:</b> in the ShulCloud calendar, put room holds and setup blocks in a private calendar category. Point the homepage Events section only at public categories, such as Worship, Learning and Community.</p></div>
+
+    <div class="issue"><div class="head"><span class="pill p1">High</span><h3>No clear path for the people who visit a synagogue site</h3></div>
+      <p class="ev">The homepage offers four tiles (Preschool, Religious School, Prayer, Become a Member). “Become a Member” goes to the generic <code>/contact</code> page, because there is no membership page. There are no service times, no address and no livestream link on the homepage. Each tile has a picture link and a “READ MORE” link pointing to the same place.</p>
+      <p class="fix"><b>Fix:</b> design for the five main visitors: <em>prospective members</em>, <em>preschool and religious school parents</em>, <em>members looking for this week’s services</em>, <em>people marking a life event or loss</em>, and <em>donors</em>. Each gets a direct route from the homepage and the menu (see <a href="#home">Homepage</a>).</p></div>
+
+    <div class="issue"><div class="head"><span class="pill p1">High</span><h3>Privacy and safety exposure</h3></div>
+      <p class="ev">There are 131 public Bar and Bat Mitzvah pages with children’s names. Zoom links are posted on 7 public pages. About 25 staff and volunteer email addresses appear as plain text across the copy, which attracts spam.</p>
+      <p class="fix"><b>Fix:</b> set simcha pages to “Logged in Only” or retire them. Move livestream and Zoom links behind member login, or use a streaming page that doesn’t expose meeting IDs. Replace raw email addresses with role-based contact forms (ShulCloud Forms) or a single office address.</p></div>
+
+    <div class="issue"><div class="head"><span class="pill p2">Medium</span><h3>Too many pages, with no hierarchy</h3></div>
+      <p class="ev">There are 1,093 pages, of which 729 have no body copy. There are 40+ separate board-member pages, “Clone of…” pages, and five High Holy Days pages, one per year (5782–5785). Web addresses are inconsistent: <code>/learn/religious-school</code> and <code>/learning/religious-school</code> are two different pages, and some addresses end in <code>.html</code> while others don’t.</p>
+      <p class="fix"><b>Fix:</b> cut down to about 60 public pages under 6 menu sections (see <a href="#sitemap">site map</a>). Keep one page per topic that is reused every year, such as “High Holy Days” rather than “High Holidays 5785”, and set redirects from the old addresses.</p></div>
+
+    <div class="issue"><div class="head"><span class="pill p2">Medium</span><h3>Giving is scattered across many pages and services</h3></div>
+      <p class="ev">There are separate pages for Funds, Tributes, Sponsorships, the Kol Nidre Appeal, Will Planning and several “pay” pages. Some send donors to an outside payment site (<code>secure.acceptiva.com</code>) and others to ShulCloud payments.</p>
+      <p class="fix"><b>Fix:</b> create one Give page with a clear choice: Donate, Honor or remember someone (tributes), Sponsor, Kol Nidre Appeal, Leave a legacy. Use ShulCloud’s own donation forms throughout so the experience and receipts are consistent.</p></div>
+
+    <div class="issue"><div class="head"><span class="pill p2">Medium</span><h3>Pages look different from each other because of pasted formatting</h3></div>
+      <p class="ev">Copy has been pasted in from Word and Google Docs, bringing 4,348 inline style overrides and fonts such as Arial, Georgia, Verdana, Times New Roman, Trebuchet, Calibri and Lucida. 30 tables are used for layout, and 22 kept pages link to PDFs instead of putting the content on the page.</p>
+      <p class="fix"><b>Fix:</b> when rewriting, paste as plain text and use only the editor’s headings (H2/H3), lists and bold. Use ShulCloud’s column sections for layout instead of tables. Turn PDFs into pages, except for forms people actually print.</p></div>
+
+    <div class="issue"><div class="head"><span class="pill p2">Medium</span><h3>Accessibility gaps</h3></div>
+      <p class="ev">Almost every image has no alt text, 369 links have no readable text, and some links just say “READ MORE” or “MORE INFO”. Screen-reader users hear “link, link, read more”.</p>
+      <p class="fix"><b>Fix:</b> give every image alt text, or mark it decorative. Write link text that says where the link goes (“Explore the preschool”). Use a single link per card.</p></div>
+
+    <div class="issue"><div class="head"><span class="pill p3">Lower</span><h3>Search results show weak titles and no summaries</h3></div>
+      <p class="ev">Only 1 of 189 kept pages has a meta description, the summary Google shows under the link. 107 have no SEO title, so Google shows names like “Learn &gt; Preschool &gt; Summer Fun”.</p>
+      <p class="fix"><b>Fix:</b> while rewriting, fill in each page’s SEO title (“Summer Camp | TBI Preschool, Port Washington”) and a 1–2 sentence meta description. Both fields are already on every page’s settings screen.</p></div>
+  </div>
+</section>
+
+<section id="shulcloud">
+  <h2>What ShulCloud lets you change</h2>
+  <div class="read"><p>ShulCloud sites are built from a <strong>theme</strong>, which controls the header, menu style, fonts and footer, plus pages made of stacked <strong>sections</strong>. You can’t freely design every pixel. You can control structure, sections, images, menus and copy, and that covers almost everything this review recommends. The options marked <span class="pill yes">Seen</span> appear in TBI’s own admin.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Control</th><th>Where</th><th>Status</th><th>Use it for</th></tr></thead>
+    <tbody>
+      <tr><td>Section layouts: full width; 2, 3, 4, 5 or 6 equal columns; 1/3 + 2/3; 2/3 + 1/3; 1/4 + 3/4; 3/4 + 1/4; 1/4 + 1/2 + 1/4; 1/3 + 1/6 + 1/3 + 1/6</td><td>Page → Start Editing → Add Section</td><td><span class="pill yes">Seen</span></td><td>Every layout in this plan uses only these</td></tr>
+      <tr><td>Section templates: Global, Welcome, Events, Donation Teaser, Full Width Teaser, Parallax Teaser, Rounded Images, Funds/Donate sections 1–3</td><td>Section → Template</td><td><span class="pill yes">Seen</span></td><td>Homepage bands, the Give page, image cards</td></tr>
+      <tr><td>Section background image</td><td>Section → Background Image</td><td><span class="pill yes">Seen</span></td><td>Photo bands, such as the Join banner</td></tr>
+      <tr><td>Hero sliders (2 exist: “home”, “Hero: Days Of Awe”)</td><td>CMS Pages → Setup Sliders</td><td><span class="pill yes">Seen</span></td><td>Homepage hero. Use one slide, not a rotating carousel</td></tr>
+      <tr><td>Navigation, including mega menus</td><td>CMS Pages → Setup Navigation</td><td><span class="pill yes">Seen</span></td><td>The new 6-section menu</td></tr>
+      <tr><td>Sidebar: Global / Private / None per page</td><td>Page settings</td><td><span class="pill yes">Seen</span></td><td>Turn the sidebar off on landing pages so they can be full width</td></tr>
+      <tr><td>Visibility: Public / Logged in Only</td><td>Page settings</td><td><span class="pill yes">Seen</span></td><td>Simcha pages, livestream links, member resources</td></tr>
+      <tr><td>SEO title, H1, meta description, noindex, web address</td><td>Page settings</td><td><span class="pill yes">Seen</span></td><td>Search results and clean addresses</td></tr>
+      <tr><td>Page type: normal / blog / redirect</td><td>Page settings</td><td><span class="pill yes">Seen</span></td><td>Redirect old addresses to new pages. Use a blog for rabbi’s messages and news</td></tr>
+      <tr><td>Theme, logo, theme colors</td><td>Change Template / Setup Logo</td><td><span class="pill yes">Seen</span></td><td>Pick the cleanest available theme. Set brand colors in the theme options</td></tr>
+      <tr><td>Calendar, event pages, photo galleries, forms, payments, tributes, member login</td><td>ShulCloud modules</td><td><span class="pill yes">Seen</span></td><td>Use the built-in modules rather than outside links</td></tr>
+      <tr><td>Custom CSS or fonts beyond the theme</td><td>Website settings or ShulCloud support</td><td><span class="pill ask">Ask ShulCloud</span></td><td>Only needed if the mockup goes beyond theme options. ShulCloud also offers paid custom theme work</td></tr>
+      <tr><td>Rebuilding the header and footer</td><td>Theme</td><td><span class="pill ask">Ask ShulCloud</span></td><td>The utility bar and footer content are usually editable. Their structure is set by the theme</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note"><strong>Design guideline:</strong> mock up only what can be built with the sections and templates above. A design that needs a custom component means a ShulCloud support ticket or paid theme work, so mark any such part clearly in the mockup.</p>
+</section>
+
+<section id="sitemap">
+  <h2>Recommended site map</h2>
+  <div class="read"><p>Six menu sections plus two buttons. Each section opens on a landing page that is useful on its own. Grey notes show which current pages fold into each new page.</p></div>
+  <div class="map">
+    <div class="col"><h3>About</h3><ul>
+      <li>Welcome from our clergy</li>
+      <li>Clergy &amp; staff<span class="from">one page, replaces individual bios</span></li>
+      <li>Leadership<span class="from">one grid, replaces 40+ board pages</span></li>
+      <li>Our history &amp; values</li>
+      <li>Visit us<span class="from">address, parking, accessibility, office hours</span></li>
+      <li>Contact</li>
+      <li>Employment &amp; rentals</li></ul></div>
+    <div class="col"><h3>Pray</h3><ul>
+      <li>Services &amp; times<span class="from">Shabbat, Minyan, Live Services</span></li>
+      <li>Watch online<span class="from">members only for meeting links</span></li>
+      <li>High Holy Days<span class="from">one page, replaces 5 yearly pages</span></li>
+      <li>Holidays &amp; festivals</li>
+      <li>Children’s services</li>
+      <li>Prayer resources<span class="from">How to, Torah honors, prayer selections</span></li></ul></div>
+    <div class="col"><h3>Learn</h3><ul>
+      <li>Preschool<span class="from">About, Programs, First Friends, Extended Care, Summer</span></li>
+      <li>Religious School<span class="from">About, Grade Highlights, Registration</span></li>
+      <li>Teens<span class="from">TBI High, Madrichim, Youth</span></li>
+      <li>Adult learning<span class="from">Life Long Learning, classes</span></li></ul></div>
+    <div class="col"><h3>Community</h3><ul>
+      <li>Events calendar</li>
+      <li>Sisterhood · Men’s Club</li>
+      <li>Social Action<span class="from">merge 2 duplicate pages</span></li>
+      <li>Volunteer</li>
+      <li>News &amp; TBI Tablet<span class="from">one archive, replaces yearly “Past Issues” pages</span></li>
+      <li>Photo galleries</li></ul></div>
+    <div class="col"><h3>Life Events</h3><ul>
+      <li>B’nai Mitzvah<span class="from">program info, not individual children</span></li>
+      <li>Baby namings &amp; brit</li>
+      <li>Weddings</li>
+      <li>Conversion</li>
+      <li>Mourning &amp; funerals</li>
+      <li>Yahrzeits</li></ul></div>
+    <div class="col cta"><h3>Join · Give</h3><ul>
+      <li>Why TBI</li>
+      <li>Membership &amp; dues<span class="from">replaces the “Join us” link to Contact</span></li>
+      <li>Plan a visit</li>
+      <li>Give<span class="from">Funds, Tributes, Sponsor, Kol Nidre, Will Planning</span></li></ul></div>
+  </div>
+  <div class="utility"><strong>Utility bar:</strong><span>Calendar</span><span>Watch online</span><span>Member login</span><span>Contact</span><span>Search</span></div>
+</section>
+
+<section id="home">
+  <h2>Homepage layout</h2>
+  <div class="read"><p>Ordered by what visitors come to find. Each band lists the ShulCloud section and template to build it with. On phones, columns stack in the order shown.</p></div>
+  <div class="wire">
+    <div class="band"><div class="recipe"><b>Theme header</b><br>Setup Logo + Navigation</div>
+      <div class="box"><h4>Logo · About · Pray · Learn · Community · Life Events · [Join] [Give]</h4><p>Utility bar above: Calendar · Watch online · Member login · Contact</p></div></div>
+    <div class="band"><div class="recipe"><b>Slider “home”</b><br>one slide only</div>
+      <div class="box solid"><h4>“A welcoming home for Jewish life in Port Washington”</h4><p>One real photo of the congregation. Two buttons: <strong>Plan a visit</strong> and <strong>Explore membership</strong>. (Headline is a placeholder for the clergy and board to word.)</p></div></div>
+    <div class="band"><div class="recipe"><b>4 Columns Equal</b><br>Global, tinted background</div>
+      <div class="box"><h4>This week at TBI</h4><div class="cols c4"><div>Shabbat evening<br>Fri · time</div><div>Shabbat morning<br>Sat · time</div><div>Minyan<br>days · time</div><div>Watch online<br>link</div></div></div></div>
+    <div class="band"><div class="recipe"><b>4 Columns Equal</b><br>Rounded Images</div>
+      <div class="box"><h4>Find your place</h4><div class="cols c4"><div>Preschool<br><em>Tour our preschool</em></div><div>Religious School<br><em>See grades &amp; registration</em></div><div>Prayer<br><em>Find a service</em></div><div>Adult learning<br><em>Browse classes</em></div></div><p style="margin-top:8px">One photo and one descriptive link per card. No separate “READ MORE”.</p></div></div>
+    <div class="band"><div class="recipe"><b>Full Width</b><br>Events template</div>
+      <div class="box"><h4>Upcoming at TBI</h4><p>Next 4–6 public events from the Worship, Learning and Community categories only. “See the full calendar” link.</p></div></div>
+    <div class="band"><div class="recipe"><b>1/3 + 2/3</b><br>Welcome template</div>
+      <div class="box"><h4>Welcome from our clergy</h4><div class="cols c13"><div>Clergy photo</div><div>3–4 sentences in the rabbi’s voice. Link: “Meet our clergy and staff”</div></div></div></div>
+    <div class="band"><div class="recipe"><b>Full Width</b><br>Parallax Teaser + background image</div>
+      <div class="box"><h4>New to TBI?</h4><p>One sentence on who we are. Buttons: <strong>Plan a visit</strong> and <strong>Membership &amp; dues</strong></p></div></div>
+    <div class="band"><div class="recipe"><b>Full Width</b><br>Donation Teaser</div>
+      <div class="box"><h4>Support our community</h4><p>Donate · Honor or remember someone · Kol Nidre Appeal (shown in season)</p></div></div>
+    <div class="band"><div class="recipe"><b>Theme footer</b></div>
+      <div class="box"><h4>Address + map link · Office hours · Phone · Newsletter sign-up · Facebook</h4><p>No raw staff emails. Use “Contact the office” instead</p></div></div>
+  </div>
+</section>
+
+<section id="templates">
+  <h2>Interior page templates</h2>
+  <div class="read"><p>Four reusable recipes cover nearly every kept page. Use them consistently so the site feels like one place.</p></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Template</th><th>Used for</th><th>Section recipe (top to bottom)</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Section landing</strong></td><td>About, Pray, Learn, Community, Life Events</td><td>Sidebar off · Full Width intro (H1 + 2 sentences) · 3 Columns Equal cards linking to child pages · Full Width “Questions? Contact …” strip</td></tr>
+      <tr><td><strong>Program page</strong></td><td>Preschool, Religious School, Adult learning, Services</td><td>1/3 + 2/3: photo + overview · 3 Columns Equal: who it’s for / when / cost · Full Width: details with H2 sections · Full Width call to action (Register, Tour, Contact)</td></tr>
+      <tr><td><strong>People grid</strong></td><td>Clergy &amp; staff, Leadership</td><td>Full Width intro · 4 Columns Equal (Rounded Images): photo, name, role, one line. One page replaces 40+ bio pages</td></tr>
+      <tr><td><strong>Give</strong></td><td>Give, Kol Nidre Appeal</td><td>Full Width impact statement · Funds/Donate Sections 1–3 as the ways to give · ShulCloud donation form · tributes and legacy links</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="rules">
+  <h2>Rules for page editors</h2>
+  <ul class="rules read">
+    <li>Paste as plain text (Ctrl+Shift+V). Never paste formatted text from Word or Google Docs.</li>
+    <li>Use only H2 and H3 headings, lists, bold and links. Fonts and colors come from the theme.</li>
+    <li>Use column sections for layout, never tables. Use tables only for real tables, such as a dues chart.</li>
+    <li>Give every image alt text that describes it, or leave it empty if it’s purely decorative.</li>
+    <li>Make link text say where it goes. Never “click here” or “read more”.</li>
+    <li>Name pages and addresses simply: <code>/learn/preschool/summer</code>, no <code>.html</code>, no years.</li>
+    <li>Keep one page per topic that is reused every year: update it rather than cloning it, and delete clones.</li>
+    <li>Use the calendar for events, not new CMS pages. Room holds go in a private calendar category.</li>
+    <li>Fill in the SEO title and meta description whenever you publish a page.</li>
+    <li>No children’s names, meeting links or personal emails on public pages.</li>
+  </ul>
+</section>
+
+<section id="plan">
+  <h2>Rollout</h2>
+  <div class="phases">
+    <div class="phase"><div><h3>Clean up (1–2 weeks)</h3><p>Unpublish the ~900 empty, past-event and clone pages from the audit. Set simcha pages to members only. Move room holds out of the public calendar. Remove public Zoom links.</p></div></div>
+    <div class="phase"><div><h3>Mock up in Claude Design</h3><p>Homepage plus the four templates, using the brief in <code>docs/claude-design-brief.md</code>. Review with clergy, staff and board.</p></div></div>
+    <div class="phase"><div><h3>Restructure the menu</h3><p>Build the six landing pages, rebuild the navigation, and set redirects from old addresses.</p></div></div>
+    <div class="phase"><div><h3>Rewrite and rebuild pages</h3><p>Work from <code>audit/tbi-site-copy.md</code>, page by page, in the new templates: Join, Give, Preschool and Services first.</p></div></div>
+    <div class="phase"><div><h3>Final pass</h3><p>Alt text, link text, SEO titles and descriptions, and a phone check of every landing page.</p></div></div>
+  </div>
+</section>
+</main>
+<footer class="wrap">Based on the CMS and page-copy exports of 18 Nov 2026 (1,093 pages). Page-level detail is in <code>audit/tbi-content-audit.xlsx</code>.</footer>
