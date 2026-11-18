@@ -129,7 +129,9 @@ def header(ws, cols, widths):
         ws.column_dimensions[get_column_letter(i)].width = w
     ws.freeze_panes = "C2"; ws.row_dimensions[1].height = 34
 def cap(t):
-    t = t or ""
+    t = re.sub(r"^#{1,6} ", "", t or "", flags=re.M)
+    if t[:1] in ("=", "+", "@"):  # Excel would treat these as formulas
+        t = "\u200b" + t
     return t if len(t) < 32000 else t[:31900] + "\n…[truncated: see the JSON export for the full text]"
 
 # Read me
@@ -172,7 +174,7 @@ dv = DataValidation(type="list", formula1=STATUS, allow_blank=True); ws.add_data
 for i, (new, (sec, nurl, olds)) in enumerate(SITEMAP.items(), 1):
     body, seo, meta = split_seo(sections.get(new, ""))
     olds_found = [by_url[o] for o in olds if o in by_url]
-    current = "\n\n".join(f"=== {r['admin_name']} ({r['url']}) ===\n{r['text']}" for r in olds_found)
+    current = "\n\n".join(f"CURRENT PAGE: {r['admin_name']} ({r['url']})\n{'-' * 40}\n{r['text']}" for r in olds_found)
     replaces = "\n".join(f"{r['admin_name']}  {r['url']}" for r in olds_found)
     active = "\n".join(("Yes" if r["status"] == "Visible" else "No") + f"  {r['url']}" for r in olds_found)
     cur_seo = "\n".join(filter(None, ((cms.get(r["view_url"], {}).get("fields", {}).get("info[title]") or {}).get("value", "").strip() for r in olds_found))) or "(none)"
